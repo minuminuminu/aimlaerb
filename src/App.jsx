@@ -16,7 +16,7 @@ const FullBody = styled.div`
   animation: ${onPageLoad} 1s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
-  background-color: #b7f4f8;
+  background-color: #cefcff;
 `;
 
 function App() {

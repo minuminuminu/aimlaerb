@@ -15,7 +15,8 @@ const Dot = styled.div`
   width: 75px;
   height: 75px;
   border-radius: 50%;
-  background-color: cyan;
+  box-shadow: 0px 0px 15px 0px #2359632d;
+  background-color: #18dada;
   transform: ${(props) =>
     `translateX(${props.positionX}vw) translateY(${props.positionY}vh)`};
 
