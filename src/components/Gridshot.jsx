@@ -31,14 +31,33 @@ export const Gridshot = (props) => {
   const [hits, setHits] = useState(0);
   const [misses, setMisses] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(5);
+  let interval;
+
+  const startTimer = () => {
+    interval = setInterval(() => {
+      setTimer((seconds) => seconds - 1);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    if (timer != 5) {
+      console.log(timer);
+    }
+
+    if (timer == 0) {
+      console.log("0 reached");
+      clearInterval(interval);
+      console.log("interval cleared");
+    }
+  }, [timer]);
 
   useEffect(() => {
     if (hasStarted == false) {
       return;
     }
 
-    // What to do if game has started, i.e. if you've clicked on the dot
+    startTimer();
   }, [hasStarted]);
 
   const hit = () => {
