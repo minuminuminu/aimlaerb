@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const Gameboard = styled.div`
   width: 100%;
@@ -10,8 +10,20 @@ const Gameboard = styled.div`
   overflow: hidden;
 `;
 
+const Header = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  text-transform: uppercase;
+`;
+
 const Dot = styled.div`
-  /* position: absolute; */
+  position: absolute;
   width: 75px;
   height: 75px;
   border-radius: 50%;
@@ -30,35 +42,43 @@ export const Gridshot = (props) => {
   const [posY, setPosY] = useState(0);
   const [hits, setHits] = useState(0);
   const [misses, setMisses] = useState(0);
+  const [stats, setStats] = useState({
+    hits: hits,
+    misses: misses,
+    accuracy: "100%",
+  });
   const [hasStarted, setHasStarted] = useState(false);
   const [timer, setTimer] = useState(5);
-  let interval;
+  const intervalRef = useRef();
 
-  const startTimer = () => {
-    interval = setInterval(() => {
-      setTimer((seconds) => seconds - 1);
-    }, 1000);
+  const displayStats = () => {
+    const accuracy = hits / (hits + misses);
+
+    let tempObj = {
+      hits: hits,
+      misses: misses,
+      accuracy: accuracy,
+    };
+
+    setStats(tempObj);
   };
-
-  useEffect(() => {
-    if (timer != 5) {
-      console.log(timer);
-    }
-
-    if (timer == 0) {
-      console.log("0 reached");
-      clearInterval(interval);
-      console.log("interval cleared");
-    }
-  }, [timer]);
 
   useEffect(() => {
     if (hasStarted == false) {
       return;
     }
 
-    startTimer();
-  }, [hasStarted]);
+    if (timer == 5) {
+      intervalRef.current = setInterval(() => {
+        setTimer((seconds) => seconds - 1);
+      }, 1000);
+    }
+
+    if (timer == 0) {
+      clearInterval(intervalRef.current);
+      console.log(stats);
+    }
+  }, [hasStarted, timer]);
 
   const hit = () => {
     if (hasStarted == false) {
@@ -66,6 +86,7 @@ export const Gridshot = (props) => {
     }
 
     setHits(hits + 1);
+    displayStats();
     setPosX(Math.floor(Math.random() * 86) - 40);
     setPosY(Math.floor(Math.random() * 86) - 40);
   };
@@ -82,6 +103,7 @@ export const Gridshot = (props) => {
     <>
       {props.show ? (
         <Gameboard onClick={(e) => miss()}>
+          <Header>Time left: {timer}</Header>
           <Dot
             onClick={(e) => {
               hit();
@@ -90,14 +112,6 @@ export const Gridshot = (props) => {
             positionX={posX}
             positionY={posY}
           />
-          {/* <button
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log(`hits ${hits} and misses ${misses}`);
-            }}
-          >
-            show count
-          </button> */}
         </Gameboard>
       ) : null}
     </>
