@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
+import { ReviewStats } from "./ReviewStats";
 
 const Gameboard = styled.div`
+  position: absolute;
   width: 100%;
   height: 100%;
   display: flex;
@@ -63,6 +65,11 @@ export const Gridshot = (props) => {
     setStats(tempObj);
   };
 
+  const stopGame = () => {
+    console.log(stats);
+    setHasStarted(false);
+  };
+
   useEffect(() => {
     if (hasStarted == false) {
       return;
@@ -76,7 +83,7 @@ export const Gridshot = (props) => {
 
     if (timer == 0) {
       clearInterval(intervalRef.current);
-      console.log(stats);
+      stopGame();
     }
   }, [hasStarted, timer]);
 
@@ -102,17 +109,20 @@ export const Gridshot = (props) => {
   return (
     <>
       {props.show ? (
-        <Gameboard onClick={(e) => miss()}>
-          <Header>Time left: {timer}</Header>
-          <Dot
-            onClick={(e) => {
-              hit();
-              e.stopPropagation();
-            }}
-            positionX={posX}
-            positionY={posY}
-          />
-        </Gameboard>
+        <>
+          <Gameboard onClick={(e) => miss()}>
+            <Header>Time left: {timer}</Header>
+            <Dot
+              onClick={(e) => {
+                hit();
+                e.stopPropagation();
+              }}
+              positionX={posX}
+              positionY={posY}
+            />
+          </Gameboard>
+          <ReviewStats></ReviewStats>
+        </>
       ) : null}
     </>
   );
